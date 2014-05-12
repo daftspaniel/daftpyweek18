@@ -27,6 +27,9 @@ class CaveGenerator(object):
         for i in range(5 + RND(5) ):
             self.MakeRoute(sx, sy, ex, ey)
         
+        #Place Diamond
+        self.setc(ex, ey) = 1001
+        
     def MakeRoute(self, sx, sy, ex, ey):
         self.setc(sx, sy, MAINROUTE)
         while sx!=ex or sy!=ey:

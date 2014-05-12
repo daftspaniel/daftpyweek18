@@ -101,8 +101,10 @@ class EBGame(object):
                 p[1] -= self.scale * (self.p1.py -4 )
                 if c==1:
                      self.surface.blit(self.gfx.floor, p )
-                if c==0:
+                elif c==0:
                      self.surface.blit(self.gfx.block, p )
+                elif c==1001:
+                     self.surface.blit(self.gfx.diamond, p )
         
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
