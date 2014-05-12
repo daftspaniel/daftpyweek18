@@ -28,18 +28,17 @@ class EBGame(object):
         self.cg.Show()
         
     def MainLoop(self):
-        print("ml")
+        #print("ml")
         self.DrawHome()
         self.screen.blit(self.surface, (0, 0))
         pygame.display.flip()
-        print("ml")
+        #rint("ml")
         #while True:
         #    if self.Location == 1:
         #        pass
         
-        self.DrawCave()
-        self.screen.blit(self.surface, (0, 0))
-        pygame.display.flip()
+        self.UpdateScreen()
+        
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -70,16 +69,22 @@ class EBGame(object):
                             self.p1.px = oldx
                             self.p1.py = oldy
                         else:
-                            self.Update()
+                            self.UpdateScreen()
+                            self.UpdateSFX()
                             self.sfx.step.play()
+                            
     
-    def Update(self):
-        print(self.p1.px)
-        print(self.p1.py)
+    def UpdateScreen(self):
+        #print(self.p1.px)
+        #print(self.p1.py)
         self.surface.fill(pygame.Color("grey"))
         self.DrawCave()
         self.screen.blit(self.surface, (0, 0))
         pygame.display.flip()
+        
+    def UpdateSFX(self):
+        if self.cg.getc(self.p1.px, self.p1.py) == DIAMOND:
+            self.sfx.found.play()
         
     def DrawHome(self):
         DrawText8(self.surface, 8, 8, "You are at home.")
@@ -103,11 +108,17 @@ class EBGame(object):
                      self.surface.blit(self.gfx.floor, p )
                 elif c==0:
                      self.surface.blit(self.gfx.block, p )
-                elif c==1001:
-                     self.surface.blit(self.gfx.diamond, p )
+                elif c == DIAMOND:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.diamond, p )
+                elif c == NINJA:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.ninja, p )
         
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
+        pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,150), 1 )
         DrawText8(self.surface, 8, 458, "you are in the dungeon.")
         
         self.surface.blit(self.gfx.player, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )
+        self.surface.blit(self.gfx.heart, (8,490, self.scale, self.scale) )

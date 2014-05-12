@@ -1,6 +1,9 @@
 from gamelib.util import *
 
 MAINROUTE = 1
+DIAMOND = 1001
+
+NINJA = 2001
 
 """
 Generate a square cave map.
@@ -10,9 +13,12 @@ class CaveGenerator(object):
     def __init__(self, width):
         self.cave = [ 0 for i in range(width * width) ]
         self.width = width
+        self.spaces = []
         
     def setc(self, x, y, v):
         self.cave[ (y * self.width) + x] = v
+        if MAINROUTE==v: 
+            self.spaces.append( (x,y) )
         
     def getc(self, x, y):
         if ((y * self.width) + x) >= len(self.cave):
@@ -27,9 +33,16 @@ class CaveGenerator(object):
         for i in range(5 + RND(5) ):
             self.MakeRoute(sx, sy, ex, ey)
         
-        #Place Diamond
-        self.setc(ex, ey) = 1001
+        # Place Diamond
+        self.setc(ex, ey, DIAMOND)
         
+        # Baddies
+        placed = False
+        #while !placed:
+        cx = (len(self.spaces) // 2) + RND(len(self.spaces) // 4)
+        pos = self.spaces[cx]
+        self.setc(pos[0], pos[1], NINJA)
+            
     def MakeRoute(self, sx, sy, ex, ey):
         self.setc(sx, sy, MAINROUTE)
         while sx!=ex or sy!=ey:
