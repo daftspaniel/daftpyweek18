@@ -1,7 +1,4 @@
-import random
-
-def RND(maxv):
-    return random.randrange(0, maxv)
+from gamelib.util import *
 
 MAINROUTE = 1
 
@@ -18,6 +15,8 @@ class CaveGenerator(object):
         self.cave[ (y * self.width) + x] = v
         
     def getc(self, x, y):
+        if ((y * self.width) + x) >= len(self.cave):
+            return 0
         return self.cave[ (y * self.width) + x]
 
     def Generate(self):
@@ -25,6 +24,11 @@ class CaveGenerator(object):
         sy = 0
         ex = self.width - 1
         ey = self.width - 1
+        for i in range(5 + RND(5) ):
+            self.MakeRoute(sx, sy, ex, ey)
+        
+    def MakeRoute(self, sx, sy, ex, ey):
+        self.setc(sx, sy, MAINROUTE)
         while sx!=ex or sy!=ey:
             if sx!=ex:
                 nextpath = RND(8)
@@ -38,8 +42,6 @@ class CaveGenerator(object):
                 for i in range(nextpath):
                     sy += 1
                     self.setc(sx, sy, MAINROUTE)
-        print(sx)
-        print(sy)
         
     def Show(self):
         for x in range(self.width):
