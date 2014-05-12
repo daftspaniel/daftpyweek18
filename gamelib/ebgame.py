@@ -12,7 +12,7 @@ class EBGame(object):
         self.surface = surface
         self.screen = screen
         self.scale = 64
-        self.gfx = gfxStore()
+        self.gfx = gfxStore(self.scale)
         self.sfx = sfxStore()
         #key init
         self.p1 = Player()
@@ -85,11 +85,14 @@ class EBGame(object):
         DrawText8(self.surface, 8, 8, "You are at home.")
         
     def DrawCave(self):
+        
         w = self.cg.width
         sx = max(self.p1.px - 4, 0)
         sy = max(self.p1.py - 4, 0)
-        ex = min(self.cg.width, sx + 16)
-        ey = min(self.cg.width, sy + 16)
+        ex = min(w, sx + 16)
+        ey = min(w, sy + 16)
+        
+        # Draw The Required Tiles
         for x in range(sx, ex):
             for y in range(sy, ey):
                 c = self.cg.getc(x,y)
@@ -97,11 +100,12 @@ class EBGame(object):
                 p[0] -= self.scale * (self.p1.px - 4 )
                 p[1] -= self.scale * (self.p1.py -4 )
                 if c==1:
-                     #pygame.draw.rect(self.surface, pygame.Color("brown"), p )
-                     self.surface.blit(self.floor, p )
+                     self.surface.blit(self.gfx.floor, p )
                 if c==0:
-                     self.surface.blit(self.block, p )
+                     self.surface.blit(self.gfx.block, p )
+        
+        # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
         DrawText8(self.surface, 8, 458, "you are in the dungeon.")
         
-        self.surface.blit(self.pgfx, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )
+        self.surface.blit(self.gfx.player, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )

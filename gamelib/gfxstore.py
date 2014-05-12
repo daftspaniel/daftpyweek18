@@ -2,8 +2,9 @@ from gamelib.util import *
 
 class gfxStore(object):
 
-    def __init__(self):
-        self.pgfx = self.LoadGFX("img/player.png")
+    def __init__(self, scale):
+        self.scale = scale
+        self.player = self.LoadGFX("img/player.png")
         self.block = self.LoadGFX("img/scene/stone.png") 
         self.floor = self.LoadGFX("img/scene/floor.png")
 
