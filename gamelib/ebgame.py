@@ -26,12 +26,13 @@ class EBGame(object):
         self.cg = CaveGenerator(64)
         self.cg.Generate()
         #self.cg.Show()
-        #self.cur = self.cg
+        self.cur = self.cg
         
     def CreateRooms(self):
         self.home = CaveGenerator(12, HOMEFLOOR)
         self.cur = self.home
         self.home.setc(9, 9, PORTAL)
+        
     def MainLoop(self):
         #
         self.UpdateScreen()
@@ -68,6 +69,7 @@ class EBGame(object):
                         else:
                             self.UpdateScreen()
                             self.UpdateSFX()
+                            self.UpdateRoom()
                             self.sfx.step.play()
                                 
     
@@ -87,9 +89,23 @@ class EBGame(object):
         c = self.cur.getc(self.p1.px, self.p1.py)
         if c == DIAMOND:
             self.sfx.found.play()
+            self.sfx.portal.play()
         elif c == PORTAL:
             self.sfx.portal.play()
-        
+            
+    def UpdateRoom(self):
+        c = self.cur.getc(self.p1.px, self.p1.py)
+        if c == PORTAL:
+            self.StartCave()
+            self.p1.px = 0
+            self.p1.py = 0
+            self.UpdateScreen()
+        elif c == DIAMOND:
+            self.cur = self.home
+            self.p1.px = 7
+            self.p1.py = 9
+            self.UpdateScreen()
+            
     def DrawHome(self):
         self.surface.fill(pygame.Color("blue"))
         DrawText8(self.surface, 8, 8, "You are at home.")
@@ -138,8 +154,9 @@ class EBGame(object):
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
         pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,149), 1 )
-        DrawText8(self.surface, 8, 458, "Hero :" + str(self.p1.name) )
+        DrawText8(self.surface, 8, 458, "NAME :" + str(self.p1.name) )
+        DrawText8(self.surface, 144, 458, "HP :" + str(self.p1.hp) )
         
         self.surface.blit(self.gfx.player, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )
         for h in range(0,8):
-            self.surface.blit(self.gfx.heart, (8 +(8*h), 490, 8, 8) )
+            self.surface.blit(self.gfx.heart, (8 +(16*h), 490, 8, 8) )
