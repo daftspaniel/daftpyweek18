@@ -14,10 +14,12 @@ class gfxStore(object):
         self.mush = self.LoadGFX("img/scene/mush.png")
         self.shrub = self.LoadGFX("img/scene/shrub.png")
         self.wfloor = self.LoadGFX("img/scene/wfloor.png")
+        self.portal1 = self.LoadGFX("img/scene/portal1.png")
+        self.portal2 = self.LoadGFX("img/scene/portal2.png")
         
         # Items
         self.diamond = self.LoadGFX("img/items/diamond.png")
-        self.heart = self.LoadGFX("img/items/heart.png")
+        self.heart = self.LoadGFX("img/items/heart.png", False)
         
         # Enemies
         self.ninja = self.LoadGFX("img/baddies/ninja.png")
@@ -33,16 +35,20 @@ class gfxStore(object):
         self.duck = self.LoadGFX("img/npc/duck.png")
         self.llama = self.LoadGFX("img/npc/llama.png")
         
-    def LoadGFX(self, filename):
+    def LoadGFX(self, filename, scale = True):
         i = pygame.image.load(filename).convert()
         i.set_colorkey((255, 255, 255))
-        return pygame.transform.scale(i, (self.scale, self.scale))
-
+        if scale:
+            return pygame.transform.scale(i, (self.scale, self.scale))
+        else:
+            return i
 
 class sfxStore(object):
 
     def __init__(self):
         self.step = self.LoadSND("snd/step.wav")
         self.found = self.LoadSND("snd/coin.wav")
+        self.portal = self.LoadSND("snd/cyberpigeon.wav")
+        
     def LoadSND(self, filename):
         return pygame.mixer.Sound(filename)

@@ -58,11 +58,12 @@ def main():
             
             surface.fill(pygame.Color("black"))
             
-            DrawText(surface, 10, 50, "Please Wait...", 48, (255,0,0) )
+            DrawText8(surface, 10, 50, "Please Wait...")
             screen.blit(surface, (0, 0))
             pygame.display.flip()
             Game = EBGame(surface, screen)
-            Game.StartCave()
+            Game.CreateRooms()
+            #Game.StartCave()
             surface.fill(pygame.Color("black"))
             GameState = 3
             

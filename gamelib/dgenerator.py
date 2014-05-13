@@ -1,6 +1,12 @@
 from gamelib.util import *
 
 MAINROUTE = 1
+
+HOMEFLOOR = 11
+
+PORTAL = 99
+
+
 DIAMOND = 1001
 
 NINJA = 2001
@@ -10,8 +16,8 @@ Generate a square cave map.
 """
 class CaveGenerator(object):
 
-    def __init__(self, width):
-        self.cave = [ 0 for i in range(width * width) ]
+    def __init__(self, width, defaultc = 0):
+        self.cave = [ defaultc for i in range(width * width) ]
         self.width = width
         self.spaces = []
         
