@@ -1,17 +1,30 @@
 from gamelib.util import *
 
 MAINROUTE = 1
+HOMEFLOOR = 2
 
-HOMEFLOOR = 11
 BRICK = 12
 DOOR = 13
 
 PORTAL = 99
 CHEST = 101
+SHRUB = 102
 
 DIAMOND = 1001
 
 NINJA = 2001
+BLOB = 2002
+EVILSAGE = 2003
+GHOST = 2004
+PHANTOM = 2005
+SNAIL = 2006
+SNAKE = 2007
+SPIDER = 2008
+HEDGE = 2009
+MAXMON = 9
+DUCK = 3001
+LLAMA = 3002
+SAGE = 3003
 
 """
 Generate a square cave map.
@@ -26,12 +39,26 @@ class CaveGenerator(object):
     def setc(self, x, y, v):
         self.cave[ (y * self.width) + x] = v
         if MAINROUTE==v: 
-            self.spaces.append( (x,y) )
+            if not (x,y) in self.spaces:
+                self.spaces.append( (x,y) )
         
     def getc(self, x, y):
-        if ((y * self.width) + x) >= len(self.cave):
+        p = (y * self.width) + x
+        if p >= len(self.cave) or p<0:
             return 0
-        return self.cave[ (y * self.width) + x]
+        return self.cave[ p ]
+        
+    def getneigh(self, x, y):
+        rl = []
+        rl.append(self.getc(x-1, y-1))
+        rl.append(self.getc(x, y-1))
+        rl.append(self.getc(x+1, y-1))
+        rl.append(self.getc(x-1, y))
+        rl.append(self.getc(x+1, y))
+        rl.append(self.getc(x-1, y+1))
+        rl.append(self.getc(x, y+1))
+        rl.append(self.getc(x+1 ,y+1))
+        return rl
         
     def setRect(self, x, y, w, h, c):
         for xr in range(x , x + w):
@@ -52,10 +79,19 @@ class CaveGenerator(object):
         # Baddies
         placed = False
         #while !placed:
-        cx = (len(self.spaces) // 2) + RND(len(self.spaces) // 4)
-        pos = self.spaces[cx]
-        self.setc(pos[0], pos[1], NINJA)
-            
+        sc = len(self.spaces)
+        cx = ( sc // 2) + RND(len(self.spaces) // 4)
+        
+        #self.setc(pos[0], pos[1], NINJA)
+        bads = len(self.spaces) // (self.width//3)
+        print("adding " + str(bads))
+        for bg in range(bads):
+            pos = self.spaces[ RND(sc) ]
+            while pos[0]<5 and pos[1]<5:
+                pos = self.spaces[ RND(sc) ]
+            m =  2001 + RND(MAXMON)
+            self.setc(pos[0], pos[1],m)
+        
     def MakeRoute(self, sx, sy, ex, ey):
         self.setc(sx, sy, MAINROUTE)
         while sx!=ex or sy!=ey:

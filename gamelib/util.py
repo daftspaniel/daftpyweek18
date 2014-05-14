@@ -30,6 +30,16 @@ def DrawText8(bg, x, y, text):
     for c in text:
         #print(ord(c)-65)   
         lsx = (ord(c)-65) * 8
+        if c=='1': lsx = 26 * 8
+        elif c=='2': lsx = 27 * 8
+        elif c=='3': lsx = 28 * 8
+        elif c=='4': lsx = 29 * 8
+        elif c=='5': lsx = 30 * 8
+        elif c=='6': lsx = 31 * 8
+        elif c=='7': lsx = 32 * 8
+        elif c=='8': lsx = 33 * 8
+        elif c=='9': lsx = 34 * 8
+        elif c=='0': lsx = 35 * 8
         #print((lsx,0,8,8))
         bg.blit(fontgfx, (x,y,8,8) , (lsx,0,8,8) )
         x += 8

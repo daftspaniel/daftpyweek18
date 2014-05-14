@@ -18,6 +18,7 @@ class EBGame(object):
         self.p1 = Player()
         self.p1.px = 1
         self.p1.py = 1
+        self.TEXT = "Test"
         
     def LoadGFX(self, filename):
         i = pygame.image.load(filename).convert()
@@ -31,13 +32,19 @@ class EBGame(object):
         self.cur = self.cg
         
     def CreateRooms(self):
-        self.home = CaveGenerator(24, MAINROUTE)
+        self.home = CaveGenerator(24, SHRUB)
         self.cur = self.home
         
+        self.home.setRect(1, 1, 22, 22, MAINROUTE)
         self.home.setRect(0, 0, 8, 8, BRICK)
+        self.home.setRect(15, 15, 8, 4, BRICK)
         self.home.setRect(1, 1, 6, 6, HOMEFLOOR)
+        
         self.home.setRect(7, 4, 1, 1, DOOR)
         self.home.setRect(4, 4, 1, 1, CHEST)
+        self.home.setRect(20, 4, 1, 1, DUCK)
+        self.home.setRect(4, 21, 1, 1, LLAMA)
+        self.home.setRect(8, 18, 1, 1, SAGE)
         
         self.home.setc(12, 9, PORTAL)
         
@@ -71,10 +78,11 @@ class EBGame(object):
                             self.p1.px = self.cur.width
                         if self.p1.py>self.cur.width:
                             self.p1.py = self.cur.width
-                        if self.cur.getc(self.p1.px, self.p1.py)==0:
+                        if self.cur.getc(self.p1.px, self.p1.py) in ( BRICK, 0):
                             self.p1.px = oldx
                             self.p1.py = oldy
                         else:
+                            self.UpdateCharacters()
                             self.UpdateScreen()
                             self.UpdateSFX()
                             self.UpdateRoom()
@@ -83,12 +91,8 @@ class EBGame(object):
     
     def UpdateScreen(self):
 
-        self.surface.fill(pygame.Color("grey"))
+        self.surface.fill(pygame.Color("black"))
         
-        #if self.Location == 2:
-        #    self.DrawHome()
-        #elif self.Location == 1:
-        #    self.DrawCave()
         self.DrawRoom()
         self.screen.blit(self.surface, (0, 0))
         pygame.display.flip()
@@ -101,7 +105,17 @@ class EBGame(object):
         elif c == PORTAL:
             self.sfx.portal.play()
             
+    def UpdateCharacters(self):
+        
+        self.TEXT = ""
+        
+        neighbouring = self.cur.getneigh(self.p1.px, self.p1.py)
+        print(neighbouring)
+        if SAGE in neighbouring:
+            self.TEXT = "Watch out for my evil brothers!"
+            
     def UpdateRoom(self):
+        
         c = self.cur.getc(self.p1.px, self.p1.py)
         if c == PORTAL:
             self.StartCave()
@@ -153,6 +167,9 @@ class EBGame(object):
                 elif c == CHEST:
                     self.surface.blit(self.gfx.wfloor, p )
                     self.surface.blit(self.gfx.chest, p )
+                elif c == SHRUB:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.shrub, p )
                 elif c == PORTAL:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.portal1, p )
@@ -165,12 +182,57 @@ class EBGame(object):
                 elif c == NINJA:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.ninja, p )
+                    
+                elif c == BLOB:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.blob, p )
+                    
+                elif c == EVILSAGE:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.evilsage, p )
+                    
+                elif c == GHOST:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.ghost, p )
+                    
+                elif c == PHANTOM:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.phantom, p )
+                    
+                elif c == SNAIL:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.snail, p )
+                    
+                elif c == SNAKE:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.snail, p )
+                    
+                elif c == HEDGE:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.veg, p )
+                    
+                elif c == DUCK:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.duck, p )
+                    
+                elif c == LLAMA:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.llama, p )
+                elif c == SPIDER:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.spider, p )
+                elif c == SAGE:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.sage, p )
+                else:
+                    print("!!!!!!!!!!!" + str(c) )
         
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
-        pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,149), 1 )
-        DrawText8(self.surface, 8, 458, "NAME :" + str(self.p1.name) )
-        DrawText8(self.surface, 144, 458, "HP :" + str(self.p1.hp) )
+        pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,148), 1 )
+        DrawText8(self.surface, 8, 458, "NAME1 :" + str(self.p1.name) )
+        DrawText8(self.surface, 144, 458, "HP :" + str(1234567890) )
+        DrawText8(self.surface, 344, 458, self.TEXT )
         
         self.surface.blit(self.gfx.player, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )
         for h in range(0,8):

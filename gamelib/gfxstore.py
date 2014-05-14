@@ -10,7 +10,7 @@ class gfxStore(object):
         self.block = self.LoadGFX("img/scene/stone.png") 
         self.floor = self.LoadGFX("img/scene/floor.png")
         self.chest = self.LoadGFX("img/scene/chest.png")
-        self.door = self.LoadGFX("img/scene/chest.png")
+        self.door = self.LoadGFX("img/scene/door.png")
         self.brick = self.LoadGFX("img/scene/brick.png")
         self.mush = self.LoadGFX("img/scene/mush.png")
         self.shrub = self.LoadGFX("img/scene/shrub.png")
@@ -56,6 +56,7 @@ class sfxStore(object):
         self.step = self.LoadSND("snd/step.wav")
         self.found = self.LoadSND("snd/coin.wav")
         self.portal = self.LoadSND("snd/cyberpigeon.wav")
+        self.portal = self.LoadSND("snd/chat.wav")
         
     def LoadSND(self, filename):
         return pygame.mixer.Sound(filename)
