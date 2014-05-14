@@ -16,6 +16,8 @@ class EBGame(object):
         self.sfx = sfxStore()
         #key init
         self.p1 = Player()
+        self.p1.px = 1
+        self.p1.py = 1
         
     def LoadGFX(self, filename):
         i = pygame.image.load(filename).convert()
@@ -29,9 +31,15 @@ class EBGame(object):
         self.cur = self.cg
         
     def CreateRooms(self):
-        self.home = CaveGenerator(12, HOMEFLOOR)
+        self.home = CaveGenerator(24, MAINROUTE)
         self.cur = self.home
-        self.home.setc(9, 9, PORTAL)
+        
+        self.home.setRect(0, 0, 8, 8, BRICK)
+        self.home.setRect(1, 1, 6, 6, HOMEFLOOR)
+        self.home.setRect(7, 4, 1, 1, DOOR)
+        self.home.setRect(4, 4, 1, 1, CHEST)
+        
+        self.home.setc(12, 9, PORTAL)
         
     def MainLoop(self):
         #
@@ -138,6 +146,13 @@ class EBGame(object):
                      self.surface.blit(self.gfx.block, p )
                 elif c == HOMEFLOOR:
                     self.surface.blit(self.gfx.wfloor, p )
+                elif c == BRICK:
+                    self.surface.blit(self.gfx.brick, p )
+                elif c == DOOR:
+                    self.surface.blit(self.gfx.door, p )
+                elif c == CHEST:
+                    self.surface.blit(self.gfx.wfloor, p )
+                    self.surface.blit(self.gfx.chest, p )
                 elif c == PORTAL:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.portal1, p )

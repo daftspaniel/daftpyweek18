@@ -10,6 +10,7 @@ class gfxStore(object):
         self.block = self.LoadGFX("img/scene/stone.png") 
         self.floor = self.LoadGFX("img/scene/floor.png")
         self.chest = self.LoadGFX("img/scene/chest.png")
+        self.door = self.LoadGFX("img/scene/chest.png")
         self.brick = self.LoadGFX("img/scene/brick.png")
         self.mush = self.LoadGFX("img/scene/mush.png")
         self.shrub = self.LoadGFX("img/scene/shrub.png")
@@ -20,6 +21,8 @@ class gfxStore(object):
         # Items
         self.diamond = self.LoadGFX("img/items/diamond.png")
         self.heart = self.LoadGFX("img/items/heart.png", False)
+        self.apple = self.LoadGFX("img/items/apple.png")
+        self.apricot = self.LoadGFX("img/items/apricot.png")
         
         # Enemies
         self.ninja = self.LoadGFX("img/baddies/ninja.png")
@@ -30,10 +33,14 @@ class gfxStore(object):
         self.snake = self.LoadGFX("img/baddies/snake.png")
         self.spider = self.LoadGFX("img/baddies/spider.png")
         self.veg = self.LoadGFX("img/baddies/veg.png")
+        self.evilsage = self.LoadGFX("img/baddies/evilsage.png")
+        self.dragon = self.LoadGFX("img/baddies/dragon.png")
+        
         
         # NPC
         self.duck = self.LoadGFX("img/npc/duck.png")
         self.llama = self.LoadGFX("img/npc/llama.png")
+        self.sage = self.LoadGFX("img/npc/sage.png")
         
     def LoadGFX(self, filename, scale = True):
         i = pygame.image.load(filename).convert()

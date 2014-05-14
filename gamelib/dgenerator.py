@@ -3,9 +3,11 @@ from gamelib.util import *
 MAINROUTE = 1
 
 HOMEFLOOR = 11
+BRICK = 12
+DOOR = 13
 
 PORTAL = 99
-
+CHEST = 101
 
 DIAMOND = 1001
 
@@ -30,6 +32,11 @@ class CaveGenerator(object):
         if ((y * self.width) + x) >= len(self.cave):
             return 0
         return self.cave[ (y * self.width) + x]
+        
+    def setRect(self, x, y, w, h, c):
+        for xr in range(x , x + w):
+            for yr in range(y, y + h):
+                self.setc(xr, yr, c)
 
     def Generate(self):
         sx = 0
