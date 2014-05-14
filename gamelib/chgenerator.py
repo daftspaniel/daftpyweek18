@@ -1,7 +1,21 @@
 from gamelib.util import *
+from gamelib.symbols import *
 
 """
 """
+sagelines = [
+                "Watch out for my evil brothers!",
+                "Blue is faster than Tuesday!",
+                "Don't get out much...",
+                "Who planted these trees?",
+                "Times change.",
+                "Selfie!"
+            ]
+            
+def getCharSpeaks(character):
+    if character==SAGE:
+        return "THE SAGE SAYS " + sagelines[RND( len(sagelines)-1 )] 
+
 class Character(object):
     
     def __init__(self):
@@ -20,6 +34,8 @@ class Player(Character):
         Character.__init__(self)
         self.hp = 25
         self.name = "Explorer1"
+        self.level = 1
+        self.exp = RND(5)
         
     def Generate(self):
         self.items.append("Dagger")

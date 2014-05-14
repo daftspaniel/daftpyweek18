@@ -9,6 +9,7 @@ class EBGame(object):
     """
     def __init__(self, surface, screen):
         self.Location = 2
+        
         self.surface = surface
         self.screen = screen
         self.scale = 64
@@ -19,7 +20,15 @@ class EBGame(object):
         self.p1.px = 1
         self.p1.py = 1
         self.TEXT = "Test"
+        self.Status = []
+        self.Status.append("Welcome to the game!")
         
+    def AddStatus(self, status):
+        self.Status.append(status)
+        if len(self.Status)>4:
+            self.Status = self.Status[1:]
+    def ClearStatus(self):
+        self.Status = []
     def LoadGFX(self, filename):
         i = pygame.image.load(filename).convert()
         i.set_colorkey((255, 255, 255))
@@ -30,6 +39,9 @@ class EBGame(object):
         self.cg.Generate()
         #self.cg.Show()
         self.cur = self.cg
+        self.ClearStatus()
+        self.AddStatus("YOU HAVE ENTERED THE DUNGEON")
+        self.AddStatus("FIND THE DIAMOND TO EXIT")
         
     def CreateRooms(self):
         self.home = CaveGenerator(24, SHRUB)
@@ -43,8 +55,8 @@ class EBGame(object):
         self.home.setRect(7, 4, 1, 1, DOOR)
         self.home.setRect(4, 4, 1, 1, CHEST)
         self.home.setRect(20, 4, 1, 1, DUCK)
-        self.home.setRect(4, 21, 1, 1, LLAMA)
-        self.home.setRect(8, 18, 1, 1, SAGE)
+        self.home.setRect(14, 4, 1, 1, LLAMA)
+        self.home.setRect(12, 5, 1, 1, SAGE)
         
         self.home.setc(12, 9, PORTAL)
         
@@ -107,12 +119,24 @@ class EBGame(object):
             
     def UpdateCharacters(self):
         
+        self.PrevText = self.TEXT
         self.TEXT = ""
-        
+        c = self.cur.getc(self.p1.px, self.p1.py)
         neighbouring = self.cur.getneigh(self.p1.px, self.p1.py)
-        print(neighbouring)
+        #print(neighbouring)
+        if SHRUB in neighbouring:
+            self.AddStatus("The trees are very thick and tall.")
+        if DUCK in neighbouring:
+            self.AddStatus("QUACK.")
         if SAGE in neighbouring:
-            self.TEXT = "Watch out for my evil brothers!"
+            self.TEXT = getCharSpeaks(SAGE)
+            if self.PrevText != self.TEXT:
+                self.AddStatus(self.TEXT)
+                self.sfx.chat.play()
+        if c == DOOR:
+            self.AddStatus("This leads to the village.")
+        if c == HOMEFLOOR:
+            self.AddStatus("You are home.")
             
     def UpdateRoom(self):
         
@@ -230,10 +254,20 @@ class EBGame(object):
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
         pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,148), 1 )
-        DrawText8(self.surface, 8, 458, "NAME1 :" + str(self.p1.name) )
-        DrawText8(self.surface, 144, 458, "HP :" + str(1234567890) )
-        DrawText8(self.surface, 344, 458, self.TEXT )
+        
+        DrawText8(self.surface, 8, 458, "NAME :" + str(self.p1.name) )
+        DrawText8(self.surface, 8, 476, "HP :" + str(self.p1.hp) )
+        DrawText8(self.surface, 8, 489, "LEVEL :" + str(self.p1.level) )
+        DrawText8(self.surface, 8, 502, "EXP :" + str(self.p1.level) )
+        sy = 458
+        for s in self.Status:
+            sy += 12
+            DrawText8(self.surface, 344, sy, s )
         
         self.surface.blit(self.gfx.player, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )
-        for h in range(0,8):
-            self.surface.blit(self.gfx.heart, (8 +(16*h), 490, 8, 8) )
+        for h in range(0,10):
+            if h<8:
+                self.surface.blit(self.gfx.heart, (8 +(16*h), 518, 8, 8) )
+            else:
+                self.surface.blit(self.gfx.greyheart, (8 +(16*h), 518, 8, 8) )
+            

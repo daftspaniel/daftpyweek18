@@ -21,6 +21,7 @@ class gfxStore(object):
         # Items
         self.diamond = self.LoadGFX("img/items/diamond.png")
         self.heart = self.LoadGFX("img/items/heart.png", False)
+        self.greyheart = self.LoadGFX("img/items/greyheart.png", False)
         self.apple = self.LoadGFX("img/items/apple.png")
         self.apricot = self.LoadGFX("img/items/apricot.png")
         
@@ -56,7 +57,7 @@ class sfxStore(object):
         self.step = self.LoadSND("snd/step.wav")
         self.found = self.LoadSND("snd/coin.wav")
         self.portal = self.LoadSND("snd/cyberpigeon.wav")
-        self.portal = self.LoadSND("snd/chat.wav")
+        self.chat = self.LoadSND("snd/chat.wav")
         
     def LoadSND(self, filename):
         return pygame.mixer.Sound(filename)
