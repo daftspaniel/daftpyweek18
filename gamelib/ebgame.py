@@ -1,7 +1,10 @@
+import time
+
 from gamelib.dgenerator import *
 from gamelib.chgenerator import *
 from gamelib.util import *
 from gamelib.gfxstore import *
+from gamelib.arena import *
 
 class EBGame(object):
     """
@@ -47,17 +50,23 @@ class EBGame(object):
         self.home = CaveGenerator(24, SHRUB)
         self.cur = self.home
         
-        self.home.setRect(1, 1, 22, 22, MAINROUTE)
+        self.home.setRect(1, 1, 22, 22, GRASS)
         self.home.setRect(0, 0, 8, 8, BRICK)
         self.home.setRect(15, 15, 8, 4, BRICK)
         self.home.setRect(1, 1, 6, 6, HOMEFLOOR)
         
+        self.home.setRect(8, 4, 9, 1, MAINROUTE)
+        self.home.setRect(12, 5, 3, 3, MAINROUTE)
+        
         self.home.setRect(7, 4, 1, 1, DOOR)
         self.home.setRect(4, 4, 1, 1, CHEST)
+        
+        self.home.setRect(17, 3, 5, 5, WATER)
         self.home.setRect(20, 4, 1, 1, DUCK)
         self.home.setRect(14, 4, 1, 1, LLAMA)
         self.home.setRect(12, 5, 1, 1, SAGE)
         
+        self.home.setRect(11, 8, 4, 3, MAINROUTE)
         self.home.setc(12, 9, PORTAL)
         
     def MainLoop(self):
@@ -90,7 +99,8 @@ class EBGame(object):
                             self.p1.px = self.cur.width
                         if self.p1.py>self.cur.width:
                             self.p1.py = self.cur.width
-                        if self.cur.getc(self.p1.px, self.p1.py) in ( BRICK, 0):
+                        if self.cur.getc(self.p1.px, self.p1.py) in ( WATER, BRICK, 0) or (self.cur.getc(self.p1.px, self.p1.py)>2000 and self.cur.getc(self.p1.px, self.p1.py)<3000):
+                            
                             self.p1.px = oldx
                             self.p1.py = oldy
                         else:
@@ -148,10 +158,27 @@ class EBGame(object):
             self.UpdateScreen()
         elif c == DIAMOND:
             self.cur = self.home
-            self.p1.px = 7
-            self.p1.py = 9
+            self.p1.px = 4
+            self.p1.py = 4
             self.UpdateScreen()
             
+        #Fight
+        monsters = self.cur.getneigh(self.p1.px, self.p1.py)
+        for f in monsters:
+            if f>2000 and f<3000:
+                print("Fight")
+                self.UpdateScreen()
+                self.sfx.alarm.play()
+                time.sleep(1)
+                self.Fight(f)
+        
+    def Fight(self, monster):
+            self.surface.fill(pygame.Color("blue"))
+            self.screen.blit(self.surface, (0, 0))
+            pygame.display.flip()
+            fig = Arena(self, monster)  
+            fig.MainLoop()
+     
     def DrawHome(self):
         self.surface.fill(pygame.Color("blue"))
         DrawText8(self.surface, 8, 8, "You are at home.")
@@ -170,6 +197,30 @@ class EBGame(object):
         sy = max(self.p1.py - 4, 0)
         ex = min(w, sx + 16)
         ey = min(w, sy + 16)
+        monsters = []
+        for x in range(sx, ex):
+            for y in range(sy, ey):        
+                c = self.cur.getc(x,y)
+                if c>2000 and c<3000:
+                    monsters.append( [x,y] )
+        cpf = self.cur.getc(self.p1.px, self.p1.py)
+        self.cur.setc(self.p1.px, self.p1.py, WATER)#dummy
+        
+        for m in monsters:
+            cm = self.cur.getc(m[0],m[1])
+            print(str(cm) + " " + str(m))
+            vx = -1 if self.p1.px < m[0] else 1
+            vy = -1 if self.p1.py < m[1] else 1
+            print(str(vx) + " " + str(vy))
+            if self.cur.getc(m[0] + vx, m[1])==1:
+                self.cur.setc(m[0] + vx, m[1], cm)
+                self.cur.setc(m[0], m[1], 1)
+            
+            elif self.cur.getc(m[0], m[1] + vy)==1:
+                self.cur.setc(m[0], m[1] + vy, cm)
+                self.cur.setc(m[0], m[1], 1)
+        
+        self.cur.setc(self.p1.px, self.p1.py, cpf)#restore
         
         # Draw The Required Tiles
         for x in range(sx, ex):
@@ -178,12 +229,17 @@ class EBGame(object):
                 p = Rect( x * self.scale, y * self.scale, self.scale , self.scale)
                 p[0] -= self.scale * (self.p1.px - 4 )
                 p[1] -= self.scale * (self.p1.py -4 )
+                 
                 if c == 1:
                      self.surface.blit(self.gfx.floor, p )
                 elif c == 0:
                      self.surface.blit(self.gfx.block, p )
                 elif c == HOMEFLOOR:
                     self.surface.blit(self.gfx.wfloor, p )
+                elif c == GRASS:
+                    self.surface.blit(self.gfx.grass, p )
+                elif c == WATER:
+                    self.surface.blit(self.gfx.water, p )
                 elif c == BRICK:
                     self.surface.blit(self.gfx.brick, p )
                 elif c == DOOR:
@@ -197,8 +253,8 @@ class EBGame(object):
                 elif c == PORTAL:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.portal1, p )
-                    if RND(3)==1:
-                        self.surface.blit(self.gfx.portal2, p )
+                    #if RND(3)==1:
+                    #    self.surface.blit(self.gfx.portal2, p )
                         
                 elif c == DIAMOND:
                     self.surface.blit(self.gfx.floor, p )
@@ -236,7 +292,7 @@ class EBGame(object):
                     self.surface.blit(self.gfx.veg, p )
                     
                 elif c == DUCK:
-                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.water, p )
                     self.surface.blit(self.gfx.duck, p )
                     
                 elif c == LLAMA:
@@ -250,7 +306,8 @@ class EBGame(object):
                     self.surface.blit(self.gfx.sage, p )
                 else:
                     print("!!!!!!!!!!!" + str(c) )
-        
+                #DrawText8(self.surface, p[0], p[1],str(x) + "," + str(y) )
+                    
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
         pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,148), 1 )

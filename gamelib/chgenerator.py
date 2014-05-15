@@ -9,12 +9,17 @@ sagelines = [
                 "Don't get out much...",
                 "Who planted these trees?",
                 "Times change.",
-                "Selfie!"
+                "Selfie!",
+                "42",
+                "I Haz the wisdom",
+                "Onion is out today",
+                "Follow daftspaniel on Twitter",
+                ""
             ]
             
 def getCharSpeaks(character):
     if character==SAGE:
-        return "THE SAGE SAYS " + sagelines[RND( len(sagelines)-1 )] 
+        return "THE SAGE SAYS " + chr(34) + sagelines[RND( len(sagelines)-1 )] + chr(34) 
 
 class Character(object):
     

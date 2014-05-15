@@ -1,4 +1,5 @@
 from gamelib.util import *
+from gamelib.symbols import *
 
 class gfxStore(object):
 
@@ -17,6 +18,8 @@ class gfxStore(object):
         self.wfloor = self.LoadGFX("img/scene/wfloor.png")
         self.portal1 = self.LoadGFX("img/scene/portal1.png")
         self.portal2 = self.LoadGFX("img/scene/portal2.png")
+        self.grass = self.LoadGFX("img/scene/grass.png")
+        self.water = self.LoadGFX("img/scene/water.png")
         
         # Items
         self.diamond = self.LoadGFX("img/items/diamond.png")
@@ -36,8 +39,16 @@ class gfxStore(object):
         self.veg = self.LoadGFX("img/baddies/veg.png")
         self.evilsage = self.LoadGFX("img/baddies/evilsage.png")
         self.dragon = self.LoadGFX("img/baddies/dragon.png")
-        
-        
+        self.monsters = {}
+        self.monsters[NINJA] = self.ninja
+        self.monsters[BLOB] = self.blob
+        self.monsters[GHOST] = self.ghost
+        self.monsters[PHANTOM] = self.phantom
+        self.monsters[SNAIL] = self.snail
+        self.monsters[SNAKE] = self.snake
+        self.monsters[SPIDER] = self.spider
+        self.monsters[HEDGE] = self.veg
+        self.monsters[EVILSAGE] = self.evilsage
         # NPC
         self.duck = self.LoadGFX("img/npc/duck.png")
         self.llama = self.LoadGFX("img/npc/llama.png")
@@ -58,6 +69,7 @@ class sfxStore(object):
         self.found = self.LoadSND("snd/coin.wav")
         self.portal = self.LoadSND("snd/cyberpigeon.wav")
         self.chat = self.LoadSND("snd/chat.wav")
+        self.alarm = self.LoadSND("snd/alarm.wav")
         
     def LoadSND(self, filename):
         return pygame.mixer.Sound(filename)
