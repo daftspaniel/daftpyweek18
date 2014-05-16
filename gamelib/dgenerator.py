@@ -35,6 +35,18 @@ class CaveGenerator(object):
         rl.append(self.getc(x+1 ,y+1))
         return rl
         
+    def getneighm(self, x, y):
+        rl = []
+        rl.append([ x-1, y-1, self.getc(x-1, y-1) ])
+        rl.append([ x, y-1, self.getc(x, y-1) ])
+        rl.append([ x+1, y-1, self.getc(x+1, y-1) ])
+        rl.append([ x-1, y, self.getc(x-1, y) ])
+        rl.append([ x+1, y, self.getc(x+1, y) ])
+        rl.append([ x-1, y+1, self.getc(x-1, y+1) ])
+        rl.append([ x, y+1, self.getc(x, y+1) ])
+        rl.append([ x+1 ,y+1, self.getc(x+1 ,y+1) ])
+        return rl
+        
     def setRect(self, x, y, w, h, c):
         for xr in range(x , x + w):
             for yr in range(y, y + h):

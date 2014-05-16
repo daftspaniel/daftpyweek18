@@ -163,22 +163,31 @@ class EBGame(object):
             self.UpdateScreen()
             
         #Fight
-        monsters = self.cur.getneigh(self.p1.px, self.p1.py)
-        for f in monsters:
+        monsters = self.cur.getneighm(self.p1.px, self.p1.py)
+        if len(monsters>1):
+            mf = monsters[0]
+            f = mf[2]
             if f>2000 and f<3000:
                 print("Fight")
-                self.UpdateScreen()
+                #self.UpdateScreen()
                 self.sfx.alarm.play()
                 time.sleep(1)
-                self.Fight(f)
-        
+                self.MonsterForFight = mf
+                self.Fight(f) 
+                
     def Fight(self, monster):
             self.surface.fill(pygame.Color("blue"))
             self.screen.blit(self.surface, (0, 0))
             pygame.display.flip()
+            print(self.MonsterForFight)
             fig = Arena(self, monster)  
-            fig.MainLoop()
-     
+            r = fig.MainLoop()
+            if r==1:
+                self.AddStatus("Victory!")
+                self.cur.setc(self.MonsterForFight[0], self.MonsterForFight[1], MAINROUTE)
+                print(self.MonsterForFight)
+                self.UpdateScreen()
+                
     def DrawHome(self):
         self.surface.fill(pygame.Color("blue"))
         DrawText8(self.surface, 8, 8, "You are at home.")
@@ -192,6 +201,7 @@ class EBGame(object):
         
     def DrawRoom(self):
         
+        print("Updating Monsters")
         w = self.cur.width
         sx = max(self.p1.px - 4, 0)
         sy = max(self.p1.py - 4, 0)
@@ -208,10 +218,10 @@ class EBGame(object):
         
         for m in monsters:
             cm = self.cur.getc(m[0],m[1])
-            print(str(cm) + " " + str(m))
+            #print(str(cm) + " " + str(m))
             vx = -1 if self.p1.px < m[0] else 1
             vy = -1 if self.p1.py < m[1] else 1
-            print(str(vx) + " " + str(vy))
+            #print(str(vx) + " " + str(vy))
             if self.cur.getc(m[0] + vx, m[1])==1:
                 self.cur.setc(m[0] + vx, m[1], cm)
                 self.cur.setc(m[0], m[1], 1)
@@ -306,7 +316,7 @@ class EBGame(object):
                     self.surface.blit(self.gfx.sage, p )
                 else:
                     print("!!!!!!!!!!!" + str(c) )
-                #DrawText8(self.surface, p[0], p[1],str(x) + "," + str(y) )
+                DrawText8(self.surface, p[0], p[1], str(x) + "," + str(y) )
                     
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )

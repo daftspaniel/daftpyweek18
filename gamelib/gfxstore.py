@@ -39,6 +39,10 @@ class gfxStore(object):
         self.veg = self.LoadGFX("img/baddies/veg.png")
         self.evilsage = self.LoadGFX("img/baddies/evilsage.png")
         self.dragon = self.LoadGFX("img/baddies/dragon.png")
+        
+        self.dragon = self.LoadGFX("img/baddies/fire.png")
+        self.dragon = self.LoadGFX("img/baddies/firedown.png")
+        
         self.monsters = {}
         self.monsters[NINJA] = self.ninja
         self.monsters[BLOB] = self.blob
@@ -70,6 +74,8 @@ class sfxStore(object):
         self.portal = self.LoadSND("snd/cyberpigeon.wav")
         self.chat = self.LoadSND("snd/chat.wav")
         self.alarm = self.LoadSND("snd/alarm.wav")
+        self.tap = self.LoadSND("snd/tap.wav")
+        self.win = self.LoadSND("snd/win.wav")
         
     def LoadSND(self, filename):
         return pygame.mixer.Sound(filename)

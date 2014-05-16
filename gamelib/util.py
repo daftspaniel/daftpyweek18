@@ -39,7 +39,7 @@ def DrawText8(bg, x, y, text):
         elif c=='7': lsx = 32 * 8
         elif c=='8': lsx = 33 * 8
         elif c=='9': lsx = 34 * 8
-        elif c=='0': lsx = 35 * 8
+        elif c=='0': lsx = 276
         elif c=='"': lsx = 283
         #print((lsx,0,8,8))
         bg.blit(fontgfx, (x,y,8,8) , (lsx,0,8,8) )

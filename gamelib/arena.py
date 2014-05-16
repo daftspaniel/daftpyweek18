@@ -1,3 +1,5 @@
+import time
+
 from gamelib.dgenerator import *
 from gamelib.chgenerator import *
 from gamelib.util import *
@@ -10,11 +12,25 @@ class Arena(object):
     def __init__(self, eb, monster):
         self.surface = eb.surface
         self.screen = eb.screen
-        self.player = eb.p1
+        
         self.eb = eb
+        self.player1 = eb.p1
         self.monster = monster
         self.bigmonster = pygame.transform.scale(self.eb.gfx.monsters[self.monster], (350, 450) )
         self.player = pygame.transform.scale(self.eb.gfx.player, (350, 450) )
+        self.CreateMonster()
+        
+    def CreateMonster(self):
+        self.e1 = Character()
+        if self.monster==NINJA: self.e1.init( "Ninja", 1, 9, 2,  2, 8, 8 )
+        if self.monster==SPIDER: self.e1.init( "Spider", 1, 8, 3, 2, 7, 9 )
+        if self.monster==HEDGE: self.e1.init( "Veg Monster", 1, 7, 4, 1, 3, 3 )
+        if self.monster==SNAKE: self.e1.init( "Snake", 1, 6, 5, 2, 7, 8 )
+        if self.monster==BLOB: self.e1.init( "Blob", 1, 5, 6, 2, 4, 6 )
+        if self.monster==GHOST: self.e1.init( "Ghost", 1, 5, 7, 1, 9, 4 )
+        if self.monster==PHANTOM: self.e1.init( "Phantom", 1, 5, 8, 1, 9, 4 )
+        if self.monster==SNAIL: self.e1.init( "Snail", 1, 4, 1, 2, 1, 2 )
+        if self.monster==EVILSAGE: self.e1.init( "Evil Sage", 1, 9, 7, 1, 3, 5 )
         
     def MainLoop(self):
         
@@ -27,8 +43,17 @@ class Arena(object):
                     exit()
                 elif event.type == KEYDOWN:
                     keystate = pygame.key.get_pressed()
-                    Fighting = False
                     
+                    if keystate[K_f]==1:
+                        self.e1.defend(self.player1.getAttack())
+                        self.eb.sfx.tap.play()
+                        time.sleep(1)
+                        self.UpdateScreen()
+                        
+                        if self.e1.hp<1:
+                            self.eb.sfx.win.play()
+                            Fighting = False
+                            return 1
     def DrawArena(self):
 
         self.surface.blit( self.player, (10, 10) )
@@ -37,6 +62,27 @@ class Arena(object):
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
         pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,148), 1 )
         
+        ph = self.player1.heartCount()
+        eh = self.e1.heartCount()
+        
+        DrawText8(self.surface, 8, 458, "NAME :" + str(self.player1.name) )
+        DrawText8(self.surface, 8, 476, "HP :" + str(self.player1.hp) )
+        
+        for h in range(0,10):
+            if h<ph:
+                self.surface.blit(self.eb.gfx.heart, (8 +(16*h), 518, 8, 8) )
+            else:
+                self.surface.blit(self.eb.gfx.greyheart, (8 +(16*h), 518, 8, 8) )
+        
+        DrawText8(self.surface, 508, 458, "NAME :" + str(self.e1.name) )
+        DrawText8(self.surface, 508, 476, "HP :" + str(self.e1.hp) )
+
+        for h in range(0,10):
+            if h<eh:
+                self.surface.blit(self.eb.gfx.heart, (508 +(16*h), 518, 8, 8) )
+            else:
+                self.surface.blit(self.eb.gfx.greyheart, (508 +(16*h), 518, 8, 8) )
+
     def UpdateScreen(self):
 
         self.surface.fill(pygame.Color("black"))
