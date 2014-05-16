@@ -164,7 +164,7 @@ class EBGame(object):
             
         #Fight
         monsters = self.cur.getneighm(self.p1.px, self.p1.py)
-        if len(monsters>1):
+        if len(monsters)>0:
             mf = monsters[0]
             f = mf[2]
             if f>2000 and f<3000:
@@ -179,10 +179,12 @@ class EBGame(object):
             self.surface.fill(pygame.Color("blue"))
             self.screen.blit(self.surface, (0, 0))
             pygame.display.flip()
+            print("Fight start")
             print(self.MonsterForFight)
             fig = Arena(self, monster)  
             r = fig.MainLoop()
             if r==1:
+                self.ClearStatus()
                 self.AddStatus("Victory!")
                 self.cur.setc(self.MonsterForFight[0], self.MonsterForFight[1], MAINROUTE)
                 print(self.MonsterForFight)
@@ -295,7 +297,7 @@ class EBGame(object):
                     
                 elif c == SNAKE:
                     self.surface.blit(self.gfx.floor, p )
-                    self.surface.blit(self.gfx.snail, p )
+                    self.surface.blit(self.gfx.snake, p )
                     
                 elif c == HEDGE:
                     self.surface.blit(self.gfx.floor, p )

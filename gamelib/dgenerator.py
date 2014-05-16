@@ -45,7 +45,12 @@ class CaveGenerator(object):
         rl.append([ x-1, y+1, self.getc(x-1, y+1) ])
         rl.append([ x, y+1, self.getc(x, y+1) ])
         rl.append([ x+1 ,y+1, self.getc(x+1 ,y+1) ])
-        return rl
+        rrl=[]
+        for n in rl:
+            if (n[2]>2000 and n[2]<3000):
+                rrl.append(n)
+        print(rrl)
+        return rrl
         
     def setRect(self, x, y, w, h, c):
         for xr in range(x , x + w):

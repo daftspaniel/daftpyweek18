@@ -19,6 +19,7 @@ class Arena(object):
         self.bigmonster = pygame.transform.scale(self.eb.gfx.monsters[self.monster], (350, 450) )
         self.player = pygame.transform.scale(self.eb.gfx.player, (350, 450) )
         self.CreateMonster()
+        self.LastAttack = 0
         
     def CreateMonster(self):
         self.e1 = Character()
@@ -44,8 +45,13 @@ class Arena(object):
                 elif event.type == KEYDOWN:
                     keystate = pygame.key.get_pressed()
                     
+                    if keystate[K_g]==1:
+                        self.e1.hp = 1
                     if keystate[K_f]==1:
-                        self.e1.defend(self.player1.getAttack())
+                        self.LastAttack = self.player1.getAttack() 
+                        self.LastAttackE = self.e1.getAttack() 
+                        self.e1.defend(self.LastAttack)
+                        self.player1.defend(self.LastAttackE)
                         self.eb.sfx.tap.play()
                         time.sleep(1)
                         self.UpdateScreen()
@@ -67,6 +73,8 @@ class Arena(object):
         
         DrawText8(self.surface, 8, 458, "NAME :" + str(self.player1.name) )
         DrawText8(self.surface, 8, 476, "HP :" + str(self.player1.hp) )
+        
+        DrawText8(self.surface, 208, 476, "YOU ATTACK" + str(self.LastAttack) )
         
         for h in range(0,10):
             if h<ph:
