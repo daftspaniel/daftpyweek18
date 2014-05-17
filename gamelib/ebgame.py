@@ -68,7 +68,7 @@ class EBGame(object):
         self.home.setRect(17, 7, 1, 1, DUCK)
         self.home.setRect(18, 11, 1, 1, LLAMA)
         self.home.setRect(19, 11, 1, 1, LLAMA)
-        self.home.setRect(12, 5, 1, 1, SAGE)
+        self.home.setRect(13, 5, 1, 1, SAGE)
         
         self.home.setRect(11, 8, 4, 3, MAINROUTE)
         self.home.setRect(14, 20, 8, 1, MAINROUTE)
@@ -157,10 +157,13 @@ class EBGame(object):
             self.AddStatus("The trees are very thick and tall.")
         if DUCK in neighbouring:
             self.AddStatus("QUACK.")
+            self.sfx.chat.play()
         if LLAMA in neighbouring:
-            self.AddStatus("orgle.")
+            self.AddStatus("orgle. orgle.")
+            self.sfx.chat.play()
         if FARMER in neighbouring:
-            self.AddStatus("Farmer says Help yourself to apples!")
+            self.AddStatus("Farmer says Help yourself to leftover apples!")
+            self.sfx.chat.play()
         if SAGE in neighbouring:
             self.TEXT = getCharSpeaks(SAGE)
             if self.PrevText != self.TEXT:
@@ -186,8 +189,13 @@ class EBGame(object):
             self.cur = self.home
             self.p1.px = 4
             self.p1.py = 4
+            self.p1.diamonds += 1
             self.UpdateScreen()
-            
+        elif c == APRICOT:
+            self.sfx.found.play()
+            self.AddStatus("You found an apricot.")
+            self.p1.food += RND(2)
+            self.cur.setc(self.p1.px, self.p1.py, MAINROUTE)
         #Fight
         monsters = self.cur.getneighm(self.p1.px, self.p1.py)
         if len(monsters)>0:
@@ -263,11 +271,11 @@ class EBGame(object):
             vx = -1 if self.p1.px < m[0] else 1
             vy = -1 if self.p1.py < m[1] else 1
             #print(str(vx) + " " + str(vy))
-            if self.cur.getc(m[0] + vx, m[1])==1:
+            if self.cur.getc(m[0] + vx, m[1])==1 or self.cur.getc(m[0] + vx, m[1])==APRICOT:
                 self.cur.setc(m[0] + vx, m[1], cm)
                 self.cur.setc(m[0], m[1], 1)
             
-            elif self.cur.getc(m[0], m[1] + vy)==1:
+            elif self.cur.getc(m[0], m[1] + vy)==1 or self.cur.getc(m[0], m[1] + vy)==APRICOT:
                 self.cur.setc(m[0], m[1] + vy, cm)
                 self.cur.setc(m[0], m[1], 1)
         
@@ -364,9 +372,12 @@ class EBGame(object):
                 elif c == FLOWER:
                     self.surface.blit(self.gfx.grass, p )
                     self.surface.blit(self.gfx.flower, p )
+                elif c == APRICOT:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.apricot, (p[0] + 8, p[1] + 24) )
                 else:
                     print("!!!!!!!!!!!" + str(c) )
-                DrawText8(self.surface, p[0], p[1], str(x) + "," + str(y) )
+                #DrawText8(self.surface, p[0], p[1], str(x) + "," + str(y) )
                     
         # Status Area
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
@@ -393,7 +404,7 @@ class EBGame(object):
         pd = self.p1.diamonds
         for h in range(1,10):
             if h<=pd:
-                self.surface.blit(self.gfx.diamond, (8 +(16*h), 534, 8, 8) )
+                self.surface.blit(self.gfx.diamondsmall, (8 +(16*h), 534, 8, 8) )
             else:
                 self.surface.blit(self.gfx.greydiamond, (8 +(16*h), 534, 8, 8) )
             

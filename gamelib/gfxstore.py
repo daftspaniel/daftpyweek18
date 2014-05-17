@@ -28,11 +28,12 @@ class gfxStore(object):
         
         # Items
         self.diamond = self.LoadGFX("img/items/diamond.png")
+        self.diamondsmall = self.LoadGFX("img/items/diamond.png", False)
         self.greydiamond = self.LoadGFX("img/items/greydiamond.png", False)
         self.heart = self.LoadGFX("img/items/heart.png", False)
         self.greyheart = self.LoadGFX("img/items/greyheart.png", False)
         self.apple = self.LoadGFX("img/items/apple.png")
-        self.apricot = self.LoadGFX("img/items/apricot.png")
+        self.apricot = self.LoadGFX("img/items/apricot.png", False)
         
         # Enemies
         self.ninja = self.LoadGFX("img/baddies/ninja.png")

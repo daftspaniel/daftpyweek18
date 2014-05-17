@@ -84,6 +84,12 @@ class CaveGenerator(object):
             m =  2001 + RND(MAXMON)
             self.setc(pos[0], pos[1],m)
         
+        food = self.width//5 +  RND(5)
+        for ng in range(food):
+            pos = self.spaces[ RND(sc) ]
+            if self.getc(pos[0], pos[1]) == 1:
+                self.setc(pos[0], pos[1], APRICOT)
+        
     def MakeRoute(self, sx, sy, ex, ey):
         self.setc(sx, sy, MAINROUTE)
         while sx!=ex or sy!=ey:
