@@ -89,7 +89,12 @@ class CaveGenerator(object):
             pos = self.spaces[ RND(sc) ]
             if self.getc(pos[0], pos[1]) == 1:
                 self.setc(pos[0], pos[1], APRICOT)
-        
+        for ng in range(self.width*2):
+            x = RND(self.width)
+            y = RND(self.width)
+            if self.getc(x, y) == 0:
+                self.setc(x, y, GOLDORE)
+                print("Gold")
     def MakeRoute(self, sx, sy, ex, ey):
         self.setc(sx, sy, MAINROUTE)
         while sx!=ex or sy!=ey:

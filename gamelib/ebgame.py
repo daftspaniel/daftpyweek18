@@ -38,7 +38,7 @@ class EBGame(object):
         return pygame.transform.scale(i, (self.scale, self.scale))
         
     def StartCave(self):
-        self.cg = CaveGenerator(64)
+        self.cg = CaveGenerator(64 + (self.p1.diamonds * 4) )
         self.cg.Generate()
         #self.cg.Show()
         self.cur = self.cg
@@ -75,6 +75,7 @@ class EBGame(object):
         self.home.setRect(20, 19, 1, 1, MAINROUTE)
         self.home.setRect(20, 18, 1, 1, DOOR)
         
+        self.home.setRect(4, 15, 9, 1, MAINROUTE)
         self.home.setRect(11, 14, 1, 1, FARMER)
         
         self.home.setRect(2, 12, 6, 4, FTREE)
@@ -110,7 +111,19 @@ class EBGame(object):
                         self.p1.py -= 1
                     elif keystate[K_s]==1:
                         self.p1.py += 1
-
+                    elif keystate[K_o]==1:
+                        if self.p1.food>0 and self.p1.hp < self.p1.maxhp:
+                            self.p1.hp += 5
+                            if self.p1.hp > self.p1.maxhp:
+                                self.p1.hp = self.p1.maxhp 
+                            self.p1.food -= 1
+                            self.AddStatus("You ate some food.")
+                        elif self.p1.hp == self.p1.maxhp:
+                            self.AddStatus("You are not hungry.")
+                        else:
+                            self.AddStatus("No food left.")
+                    elif keystate[K_m]==1:
+                        self.p1.diamonds += 1 #CHEAT!
                     if oldx != self.p1.px or oldy != self.p1.py:
                         if self.p1.px<0: self.p1.px = 0 
                         if self.p1.py<0: self.p1.py = 0
@@ -118,7 +131,7 @@ class EBGame(object):
                             self.p1.px = self.cur.width
                         if self.p1.py>self.cur.width:
                             self.p1.py = self.cur.width
-                        if self.cur.getc(self.p1.px, self.p1.py) in ( WATER, BRICK, 0) or (self.cur.getc(self.p1.px, self.p1.py)>2000 and self.cur.getc(self.p1.px, self.p1.py)<3000):
+                        if self.cur.getc(self.p1.px, self.p1.py) in (GOLDORE, WATER, BRICK, 0) or (self.cur.getc(self.p1.px, self.p1.py)>2000 and self.cur.getc(self.p1.px, self.p1.py)<3000):
                             
                             self.p1.px = oldx
                             self.p1.py = oldy
@@ -181,20 +194,30 @@ class EBGame(object):
         
         c = self.cur.getc(self.p1.px, self.p1.py)
         if c == PORTAL:
-            self.StartCave()
-            self.p1.px = 0
-            self.p1.py = 0
-            self.UpdateScreen()
+            print(self.p1.diamonds)
+            if self.p1.diamonds>=8:
+                self.sfx.alarm.play()
+                time.sleep(1)
+                self.MonsterForFight = DRAGON
+                self.Fight(DRAGON)
+            else:
+                print("Start Cave")
+                self.StartCave()
+                self.p1.px = 0
+                self.p1.py = 0
+                self.UpdateScreen()
         elif c == DIAMOND:
             self.cur = self.home
             self.p1.px = 4
             self.p1.py = 4
             self.p1.diamonds += 1
+            if self.p1.diamonds==8:
+                self.AddStatus("You will meet the Dragon next!")
             self.UpdateScreen()
         elif c == APRICOT:
             self.sfx.found.play()
             self.AddStatus("You found an apricot.")
-            self.p1.food += RND(2)
+            self.p1.food += RND(2) + 1
             self.cur.setc(self.p1.px, self.p1.py, MAINROUTE)
         #Fight
         monsters = self.cur.getneighm(self.p1.px, self.p1.py)
@@ -222,10 +245,22 @@ class EBGame(object):
                 self.AddStatus("Victory!")
                 exp = RND(3) + 1
                 gold = RND(3) + 1
+                if fig.monster == DRAGON:
+                    exp += 50
+                    gold += 50
+                    self.AddStatus("Amazing. you defeated the dragon.")
+                    self.AddStatus("Well done")
                 self.p1.exp += exp
                 self.p1.gold += gold
                 self.AddStatus("You gained " + str(exp) + " XP and " + str(gold) + " gold coins.")
-                self.cur.setc(self.MonsterForFight[0], self.MonsterForFight[1], MAINROUTE)
+                if self.p1.exp>100:
+                    self.p1.level +=1
+                    self.p1.exp = 0
+                    self.AddStatus("You have gained an XP level!")
+                try:
+                    self.cur.setc(self.MonsterForFight[0], self.MonsterForFight[1], MAINROUTE)
+                except:
+                    print("Dragon")
                 print(self.MonsterForFight)
                 self.UpdateScreen()
             else:
@@ -293,6 +328,8 @@ class EBGame(object):
                      self.surface.blit(self.gfx.floor, p )
                 elif c == 0:
                      self.surface.blit(self.gfx.block, p )
+                elif c == GOLDORE:
+                    self.surface.blit(self.gfx.stonegold, p )
                 elif c == HOMEFLOOR:
                     self.surface.blit(self.gfx.wfloor, p )
                 elif c == GRASS:
@@ -384,10 +421,12 @@ class EBGame(object):
         pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,148), 1 )
         
         DrawText8(self.surface, 8, 458, "NAME :" + str(self.p1.name) )
-        DrawText8(self.surface, 8, 476, "HP :" + str(self.p1.hp) )
+        DrawText8(self.surface, 8, 476, "HP :" + str(self.p1.hp) + " MAX HP " + str(self.p1.maxhp) )
         DrawText8(self.surface, 8, 489, "LEVEL :" + str(self.p1.level) + " EXP : " + str(self.p1.exp)  )
         DrawText8(self.surface, 8, 502,  "GOLD :" + str(self.p1.gold) + " FOOD : " + str(self.p1.food) )
+        
         sy = 458
+        
         for s in self.Status:
             sy += 12
             DrawText8(self.surface, 304, sy, s )
@@ -402,7 +441,7 @@ class EBGame(object):
                 self.surface.blit(self.gfx.greyheart, (8 +(16*h), 518, 8, 8) )
         
         pd = self.p1.diamonds
-        for h in range(1,10):
+        for h in range(1,9):
             if h<=pd:
                 self.surface.blit(self.gfx.diamondsmall, (8 +(16*h), 534, 8, 8) )
             else:

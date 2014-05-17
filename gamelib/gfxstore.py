@@ -9,6 +9,7 @@ class gfxStore(object):
         
         # Scene
         self.block = self.LoadGFX("img/scene/stone.png") 
+        self.stonegold = self.LoadGFX("img/scene/stonenug.png") 
         self.floor = self.LoadGFX("img/scene/floor.png")
         self.chest = self.LoadGFX("img/scene/chest.png")
         self.door = self.LoadGFX("img/scene/door.png")
@@ -60,6 +61,7 @@ class gfxStore(object):
         self.monsters[SPIDER] = self.spider
         self.monsters[HEDGE] = self.veg
         self.monsters[EVILSAGE] = self.evilsage
+        self.monsters[DRAGON] = self.dragon
         # NPC
         self.duck = self.LoadGFX("img/npc/duck.png")
         self.llama = self.LoadGFX("img/npc/llama.png")

@@ -34,6 +34,7 @@ class Arena(object):
         if self.monster==PHANTOM: self.e1.init( "Phantom", 1, 5, 8, 1, 9, 4 )
         if self.monster==SNAIL: self.e1.init( "Snail", 1, 4, 1, 2, 1, 2 )
         if self.monster==EVILSAGE: self.e1.init( "Evil Sage", 1, 9, 7, 1, 3, 5 )
+        if self.monster==DRAGON: self.e1.init( "Dragon", 1, 20, 12, 2, 2, 8 )
         
     def MainLoop(self):
         
