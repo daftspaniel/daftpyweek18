@@ -67,6 +67,7 @@ class gfxStore(object):
         self.llama = self.LoadGFX("img/npc/llama.png")
         self.sage = self.LoadGFX("img/npc/sage.png")
         self.farmer = self.LoadGFX("img/npc/farmer.png")
+        self.shopkeeper = self.LoadGFX("img/npc/shopk.png")
         
     def LoadGFX(self, filename, scale = True):
         i = pygame.image.load(filename).convert()

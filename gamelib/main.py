@@ -40,10 +40,12 @@ def main():
                     
                 elif event.type == ANIMEVENT:
                     surface.fill(pygame.Color("white"))
-                    DrawText8(surface, 10, 50, GameTitle)#, 48, (255,0,0) )
-                    DrawText8(surface, 11, 51, GameTitle)#, 48, (255,156,0) )
-                    DrawText8(surface, 11, 51, GameTitle)#, 48, (255,255,255) )
-
+                    pygame.draw.rect(surface, pygame.Color("black"), Rect(100,100,600,412), 1 )
+                    for i in range(16):
+                        DrawText8(surface, 210 + (i*8), 150 + (i*12), GameTitle)
+                        DrawText8(surface, 350, 400, "2014 Davy Mitchell")
+                        DrawText8(surface, 310, 420, "Do NOT COPY THIS CASSETTE")
+                        DrawText8(surface, 350, 500, "PRESS SPACEBAR TO BEGIN")
                 elif event.type == pygame.KEYDOWN:
                     keystate = pygame.key.get_pressed()
                     if keystate[K_SPACE]:

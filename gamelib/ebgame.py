@@ -25,6 +25,7 @@ class EBGame(object):
         self.TEXT = "Test"
         self.Status = []
         self.Status.append("Welcome to the game!")
+        self.InShop = False
         
     def AddStatus(self, status):
         self.Status.append(status)
@@ -83,11 +84,15 @@ class EBGame(object):
         
         self.home.setRect(10, 2, 2, 1, FLOWER)
         self.home.setRect(9, 6, 2, 1, FLOWER)
-        self.home.setRect(9, 9, 1, 1, FLOWER)
+        self.home.setRect(8, 5, 1, 1, FLOWER)
         self.home.setRect(18, 13, 1, 2, FLOWER)
         self.home.setRect(2, 19, 6, 2, FLOWER)
         
-        self.home.setc(12, 9, PORTAL)
+        self.home.setc(10, 8, 0)
+        self.home.setc(9, 9, 0)
+        self.home.setc(10, 9, PORTAL)
+        self.home.setc(10, 10, 0)
+        self.home.setc(18, 16, SHOPKEEPER)
         
     def MainLoop(self):
         #
@@ -111,6 +116,14 @@ class EBGame(object):
                         self.p1.py -= 1
                     elif keystate[K_s]==1:
                         self.p1.py += 1
+                    elif keystate[K_b]==1:
+                        if self.InShop:
+                            if self.p1.gold<100:
+                                self.AddStatus("Not enough gold.")
+                            else:
+                                self.p1.gold -= 100
+                                self.p1.attack += 5
+                                self.AddStatus("Your basic attack level is now " + str(self.p1.attack) )
                     elif keystate[K_o]==1:
                         if self.p1.food>0 and self.p1.hp < self.p1.maxhp:
                             self.p1.hp += 5
@@ -124,6 +137,8 @@ class EBGame(object):
                             self.AddStatus("No food left.")
                     elif keystate[K_m]==1:
                         self.p1.diamonds += 1 #CHEAT!
+                    elif keystate[K_n]==1:
+                        self.p1.gold += 100 #CHEAT!
                     if oldx != self.p1.px or oldy != self.p1.py:
                         if self.p1.px<0: self.p1.px = 0 
                         if self.p1.py<0: self.p1.py = 0
@@ -177,6 +192,13 @@ class EBGame(object):
         if FARMER in neighbouring:
             self.AddStatus("Farmer says Help yourself to leftover apples!")
             self.sfx.chat.play()
+        if SHOPKEEPER in neighbouring:
+            self.InShop = True
+            self.AddStatus("INCREASE YOUR ATTACK BY 5 FOR ONLY 100 GOLD")
+            self.AddStatus("PRESS B TO BUY NOW...")
+            self.sfx.chat.play()
+        else:
+            self.InShop = False
         if SAGE in neighbouring:
             self.TEXT = getCharSpeaks(SAGE)
             if self.PrevText != self.TEXT:
@@ -184,7 +206,7 @@ class EBGame(object):
                 self.sfx.chat.play()
         if c == DOOR:
             self.AddStatus("This leads to the village.")
-        if c == HOMEFLOOR:
+        if c == HOMEFLOOR and self.p1.py<14 :
             self.AddStatus("You are home.")
         if c == FTREE and RND(5)>2:
             self.sfx.found.play()
@@ -249,13 +271,16 @@ class EBGame(object):
                     exp += 50
                     gold += 50
                     self.AddStatus("Amazing. you defeated the dragon.")
-                    self.AddStatus("Well done")
+                    self.AddStatus("Well done.")
+                    self.p1.diamonds = 0
                 self.p1.exp += exp
                 self.p1.gold += gold
                 self.AddStatus("You gained " + str(exp) + " XP and " + str(gold) + " gold coins.")
                 if self.p1.exp>100:
                     self.p1.level +=1
                     self.p1.exp = 0
+                    self.p1.maxhp += 10
+                    self.p1.hp = self.p1.maxhp
                     self.AddStatus("You have gained an XP level!")
                 try:
                     self.cur.setc(self.MonsterForFight[0], self.MonsterForFight[1], MAINROUTE)
@@ -406,6 +431,9 @@ class EBGame(object):
                 elif c == FARMER:
                     self.surface.blit(self.gfx.grass, p )
                     self.surface.blit(self.gfx.farmer, p )
+                elif c == SHOPKEEPER:
+                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.shopkeeper, p )
                 elif c == FLOWER:
                     self.surface.blit(self.gfx.grass, p )
                     self.surface.blit(self.gfx.flower, p )

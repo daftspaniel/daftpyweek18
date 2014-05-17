@@ -34,7 +34,7 @@ class Arena(object):
         if self.monster==PHANTOM: self.e1.init( "Phantom", 1, 5, 8, 1, 9, 4 )
         if self.monster==SNAIL: self.e1.init( "Snail", 1, 4, 1, 2, 1, 2 )
         if self.monster==EVILSAGE: self.e1.init( "Evil Sage", 1, 9, 7, 1, 3, 5 )
-        if self.monster==DRAGON: self.e1.init( "Dragon", 1, 20, 12, 2, 2, 8 )
+        if self.monster==DRAGON: self.e1.init( "Dragon", 1, 50, 12, 12, 12, 12 )
         
     def MainLoop(self):
         
@@ -71,9 +71,15 @@ class Arena(object):
                             return 0
     def DrawArena(self):
 
-        self.surface.blit( self.player, (10, 10) )
-        self.surface.blit( self.bigmonster, (400, 10) )
-        
+        if self.monster!=DRAGON:
+            self.surface.blit( self.player, (10, 10) )
+            self.surface.blit( self.bigmonster, (400, 10) )
+        else:
+            player = pygame.transform.scale(self.eb.gfx.player, (64, 64) )
+            dragon = pygame.transform.scale(self.eb.gfx.dragon, (600, 300) )
+            
+            self.surface.blit( dragon, (150, 100) )
+            self.surface.blit( player, (10, 360) )
         pygame.draw.rect(self.surface, pygame.Color("white"), Rect(0,450,800,150) )
         pygame.draw.rect(self.surface, pygame.Color("black"), Rect(0,450,800,148), 1 )
         
