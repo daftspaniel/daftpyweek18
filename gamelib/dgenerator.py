@@ -10,13 +10,13 @@ class CaveGenerator(object):
         self.cave = [ defaultc for i in range(width * width) ]
         self.width = width
         self.spaces = []
-        
+        self.diamond = True
     def setc(self, x, y, v):
         self.cave[ (y * self.width) + x] = v
         if MAINROUTE==v: 
             if not (x,y) in self.spaces:
                 self.spaces.append( (x,y) )
-        
+        if self.diamond:self.cave[ -1 ] = DIAMOND
     def getc(self, x, y):
         p = (y * self.width) + x
         if p >= len(self.cave) or p<0:

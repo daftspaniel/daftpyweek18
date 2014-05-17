@@ -20,9 +20,15 @@ class gfxStore(object):
         self.portal2 = self.LoadGFX("img/scene/portal2.png")
         self.grass = self.LoadGFX("img/scene/grass.png")
         self.water = self.LoadGFX("img/scene/water.png")
+        self.flower = self.LoadGFX("img/scene/flower.png", False)
+        
+        self.flower = pygame.transform.scale(self.flower, (16, 16))
+        
+        self.ftree = self.LoadGFX("img/scene/ftree.png")
         
         # Items
         self.diamond = self.LoadGFX("img/items/diamond.png")
+        self.greydiamond = self.LoadGFX("img/items/greydiamond.png", False)
         self.heart = self.LoadGFX("img/items/heart.png", False)
         self.greyheart = self.LoadGFX("img/items/greyheart.png", False)
         self.apple = self.LoadGFX("img/items/apple.png")
@@ -40,8 +46,8 @@ class gfxStore(object):
         self.evilsage = self.LoadGFX("img/baddies/evilsage.png")
         self.dragon = self.LoadGFX("img/baddies/dragon.png")
         
-        self.dragon = self.LoadGFX("img/baddies/fire.png")
-        self.dragon = self.LoadGFX("img/baddies/firedown.png")
+        self.fire = self.LoadGFX("img/baddies/fire.png")
+        self.firedown = self.LoadGFX("img/baddies/firedown.png")
         
         self.monsters = {}
         self.monsters[NINJA] = self.ninja
@@ -57,6 +63,7 @@ class gfxStore(object):
         self.duck = self.LoadGFX("img/npc/duck.png")
         self.llama = self.LoadGFX("img/npc/llama.png")
         self.sage = self.LoadGFX("img/npc/sage.png")
+        self.farmer = self.LoadGFX("img/npc/farmer.png")
         
     def LoadGFX(self, filename, scale = True):
         i = pygame.image.load(filename).convert()
@@ -76,6 +83,7 @@ class sfxStore(object):
         self.alarm = self.LoadSND("snd/alarm.wav")
         self.tap = self.LoadSND("snd/tap.wav")
         self.win = self.LoadSND("snd/win.wav")
+        self.lose = self.LoadSND("snd/lose.wav")
         
     def LoadSND(self, filename):
         return pygame.mixer.Sound(filename)

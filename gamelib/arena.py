@@ -18,8 +18,10 @@ class Arena(object):
         self.monster = monster
         self.bigmonster = pygame.transform.scale(self.eb.gfx.monsters[self.monster], (350, 450) )
         self.player = pygame.transform.scale(self.eb.gfx.player, (350, 450) )
+        self.bigfloor = pygame.transform.scale(self.eb.gfx.floor, (800, 450) )
         self.CreateMonster()
-        self.LastAttack = 0
+        self.LastAttack = -1
+        self.LastMonsterAttack = -1
         
     def CreateMonster(self):
         self.e1 = Character()
@@ -49,9 +51,11 @@ class Arena(object):
                         self.e1.hp = 1
                     if keystate[K_f]==1:
                         self.LastAttack = self.player1.getAttack() 
-                        self.LastAttackE = self.e1.getAttack() 
-                        self.e1.defend(self.LastAttack)
-                        self.player1.defend(self.LastAttackE)
+                        self.LastMonsterAttack = self.e1.getAttack() 
+                        self.e1.defend(self.LastAttack, False)
+                        if self.e1.hp>0:
+                            self.player1.defend(self.LastMonsterAttack)
+                        
                         self.eb.sfx.tap.play()
                         time.sleep(1)
                         self.UpdateScreen()
@@ -60,6 +64,10 @@ class Arena(object):
                             self.eb.sfx.win.play()
                             Fighting = False
                             return 1
+                        if self.player1.hp<1:
+                            self.eb.sfx.lose.play()
+                            Fighting = False
+                            return 0
     def DrawArena(self):
 
         self.surface.blit( self.player, (10, 10) )
@@ -74,7 +82,16 @@ class Arena(object):
         DrawText8(self.surface, 8, 458, "NAME :" + str(self.player1.name) )
         DrawText8(self.surface, 8, 476, "HP :" + str(self.player1.hp) )
         
-        DrawText8(self.surface, 208, 476, "YOU ATTACK" + str(self.LastAttack) )
+        if self.LastAttack != -1:
+            if self.LastAttack>0:
+                DrawText8(self.surface, 208, 476, "YOU ATTACK " + str(self.LastAttack) )
+            else:
+                DrawText8(self.surface, 208, 476, "You miss!")
+            
+            if self.LastMonsterAttack>0:
+                DrawText8(self.surface, 208, 490,  self.e1.name + " ATTACKS " + str(self.LastMonsterAttack) )
+            else:
+                DrawText8(self.surface, 208, 490,  self.e1.name + " MISS " )
         
         for h in range(0,10):
             if h<ph:
@@ -93,8 +110,8 @@ class Arena(object):
 
     def UpdateScreen(self):
 
-        self.surface.fill(pygame.Color("black"))
-        
+        self.surface.fill(pygame.Color("white"))
+        self.surface.blit(self.bigfloor, (0,0))
         self.DrawArena()
         self.screen.blit(self.surface, (0, 0))
         pygame.display.flip()

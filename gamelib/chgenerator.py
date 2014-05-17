@@ -18,6 +18,12 @@ sagelines = [
                 "PyWeek FTW",
                 "Somewhere be dragons",
                 "Find those diamonds fast",
+                "Orcs!",
+                "LEGO Chima is quite cool.",
+                ".......",
+                "Have you read the fine manual?",
+                "One day I will be in a real game.",
+                "7",
                 ""
             ]
             
@@ -37,6 +43,7 @@ class Character(object):
         self.armour = 0
         self.spirit = 0
         self.agility = 0
+        self.gold = 0
         
     def init(self, name, level, hp, armour, spirit, agility, attack):
         self.name = name
@@ -46,17 +53,23 @@ class Character(object):
         self.spirit = spirit
         self.agilit = agility
         self.attack = attack
+        self.monster = True
         
     def heartCount(self):
         return int( 10 * (self.hp/self.maxhp) )
 
     def getAttack(self):
         a = RND(self.attack) + RND(self.spirit)
+        if self.monster and self.hp<4:
+            a = 1
         return a
         
         
-    def defend(self, oppAttack ):
-        a = int( (oppAttack - ((self.armour + self.agility) / 5)) );
+    def defend(self, oppAttack, defend = True ):
+        if defend:
+            a = int( (oppAttack - ((self.armour + self.agility) / 5)) );
+        else:
+            a = oppAttack
         if a > 0: self.hp -= a;
 
 class Player(Character):
@@ -67,6 +80,9 @@ class Player(Character):
         self.init("Pythonista", 1, 25, 1, 1, 1, 4)
         self.exp = RND(5)
         self.level = 1
+        self.diamonds = 0
+        self.monster = False
+        self.food = 0
         
     def Generate(self):
         self.items.append("Dagger")

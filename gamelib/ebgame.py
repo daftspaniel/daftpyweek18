@@ -48,25 +48,44 @@ class EBGame(object):
         
     def CreateRooms(self):
         self.home = CaveGenerator(24, SHRUB)
+        self.home.diamond = False
         self.cur = self.home
         
         self.home.setRect(1, 1, 22, 22, GRASS)
         self.home.setRect(0, 0, 8, 8, BRICK)
         self.home.setRect(15, 15, 8, 4, BRICK)
         self.home.setRect(1, 1, 6, 6, HOMEFLOOR)
+        self.home.setRect(16, 16, 6, 2, HOMEFLOOR)
         
         self.home.setRect(8, 4, 9, 1, MAINROUTE)
-        self.home.setRect(12, 5, 3, 3, MAINROUTE)
+        self.home.setRect(12, 5, 2, 17, MAINROUTE)
         
         self.home.setRect(7, 4, 1, 1, DOOR)
-        self.home.setRect(4, 4, 1, 1, CHEST)
+        self.home.setRect(4, 2, 1, 1, CHEST)
         
         self.home.setRect(17, 3, 5, 5, WATER)
         self.home.setRect(20, 4, 1, 1, DUCK)
-        self.home.setRect(14, 4, 1, 1, LLAMA)
+        self.home.setRect(17, 7, 1, 1, DUCK)
+        self.home.setRect(18, 11, 1, 1, LLAMA)
+        self.home.setRect(19, 11, 1, 1, LLAMA)
         self.home.setRect(12, 5, 1, 1, SAGE)
         
         self.home.setRect(11, 8, 4, 3, MAINROUTE)
+        self.home.setRect(14, 20, 8, 1, MAINROUTE)
+        self.home.setRect(20, 19, 1, 1, MAINROUTE)
+        self.home.setRect(20, 18, 1, 1, DOOR)
+        
+        self.home.setRect(11, 14, 1, 1, FARMER)
+        
+        self.home.setRect(2, 12, 6, 4, FTREE)
+        self.home.setRect(3, 11, 4, 6, FTREE)
+        
+        self.home.setRect(10, 2, 2, 1, FLOWER)
+        self.home.setRect(9, 6, 2, 1, FLOWER)
+        self.home.setRect(9, 9, 1, 1, FLOWER)
+        self.home.setRect(18, 13, 1, 2, FLOWER)
+        self.home.setRect(2, 19, 6, 2, FLOWER)
+        
         self.home.setc(12, 9, PORTAL)
         
     def MainLoop(self):
@@ -103,12 +122,12 @@ class EBGame(object):
                             
                             self.p1.px = oldx
                             self.p1.py = oldy
-                        else:
-                            self.UpdateCharacters()
-                            self.UpdateScreen()
-                            self.UpdateSFX()
-                            self.UpdateRoom()
-                            self.sfx.step.play()
+                    #else:
+                    self.UpdateCharacters()
+                    self.UpdateScreen()
+                    self.UpdateSFX()
+                    self.UpdateRoom()
+                    self.sfx.step.play()
                                 
     
     def UpdateScreen(self):
@@ -138,6 +157,10 @@ class EBGame(object):
             self.AddStatus("The trees are very thick and tall.")
         if DUCK in neighbouring:
             self.AddStatus("QUACK.")
+        if LLAMA in neighbouring:
+            self.AddStatus("orgle.")
+        if FARMER in neighbouring:
+            self.AddStatus("Farmer says Help yourself to apples!")
         if SAGE in neighbouring:
             self.TEXT = getCharSpeaks(SAGE)
             if self.PrevText != self.TEXT:
@@ -147,7 +170,10 @@ class EBGame(object):
             self.AddStatus("This leads to the village.")
         if c == HOMEFLOOR:
             self.AddStatus("You are home.")
-            
+        if c == FTREE and RND(5)>2:
+            self.sfx.found.play()
+            self.AddStatus("You found an apple.")
+            self.p1.food += 1
     def UpdateRoom(self):
         
         c = self.cur.getc(self.p1.px, self.p1.py)
@@ -186,8 +212,21 @@ class EBGame(object):
             if r==1:
                 self.ClearStatus()
                 self.AddStatus("Victory!")
+                exp = RND(3) + 1
+                gold = RND(3) + 1
+                self.p1.exp += exp
+                self.p1.gold += gold
+                self.AddStatus("You gained " + str(exp) + " XP and " + str(gold) + " gold coins.")
                 self.cur.setc(self.MonsterForFight[0], self.MonsterForFight[1], MAINROUTE)
                 print(self.MonsterForFight)
+                self.UpdateScreen()
+            else:
+                self.ClearStatus()
+                self.AddStatus("Defeat!")
+                self.cur = self.home
+                self.p1.px = 4
+                self.p1.py = 4
+                self.p1.hp = self.p1.maxhp
                 self.UpdateScreen()
                 
     def DrawHome(self):
@@ -262,6 +301,9 @@ class EBGame(object):
                 elif c == SHRUB:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.shrub, p )
+                elif c == FTREE:
+                    self.surface.blit(self.gfx.grass, p )
+                    self.surface.blit(self.gfx.ftree, p )
                 elif c == PORTAL:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.portal1, p )
@@ -308,7 +350,7 @@ class EBGame(object):
                     self.surface.blit(self.gfx.duck, p )
                     
                 elif c == LLAMA:
-                    self.surface.blit(self.gfx.floor, p )
+                    self.surface.blit(self.gfx.grass, p )
                     self.surface.blit(self.gfx.llama, p )
                 elif c == SPIDER:
                     self.surface.blit(self.gfx.floor, p )
@@ -316,6 +358,12 @@ class EBGame(object):
                 elif c == SAGE:
                     self.surface.blit(self.gfx.floor, p )
                     self.surface.blit(self.gfx.sage, p )
+                elif c == FARMER:
+                    self.surface.blit(self.gfx.grass, p )
+                    self.surface.blit(self.gfx.farmer, p )
+                elif c == FLOWER:
+                    self.surface.blit(self.gfx.grass, p )
+                    self.surface.blit(self.gfx.flower, p )
                 else:
                     print("!!!!!!!!!!!" + str(c) )
                 DrawText8(self.surface, p[0], p[1], str(x) + "," + str(y) )
@@ -326,17 +374,26 @@ class EBGame(object):
         
         DrawText8(self.surface, 8, 458, "NAME :" + str(self.p1.name) )
         DrawText8(self.surface, 8, 476, "HP :" + str(self.p1.hp) )
-        DrawText8(self.surface, 8, 489, "LEVEL :" + str(self.p1.level) )
-        DrawText8(self.surface, 8, 502, "EXP :" + str(self.p1.level) )
+        DrawText8(self.surface, 8, 489, "LEVEL :" + str(self.p1.level) + " EXP : " + str(self.p1.exp)  )
+        DrawText8(self.surface, 8, 502,  "GOLD :" + str(self.p1.gold) + " FOOD : " + str(self.p1.food) )
         sy = 458
         for s in self.Status:
             sy += 12
-            DrawText8(self.surface, 344, sy, s )
+            DrawText8(self.surface, 304, sy, s )
         
         self.surface.blit(self.gfx.player, (4 * self.scale, 4 * self.scale, self.scale, self.scale) )
-        for h in range(0,10):
-            if h<8:
+        
+        ph = self.p1.heartCount()
+        for h in range(1,10):
+            if h <= ph:
                 self.surface.blit(self.gfx.heart, (8 +(16*h), 518, 8, 8) )
             else:
                 self.surface.blit(self.gfx.greyheart, (8 +(16*h), 518, 8, 8) )
+        
+        pd = self.p1.diamonds
+        for h in range(1,10):
+            if h<=pd:
+                self.surface.blit(self.gfx.diamond, (8 +(16*h), 534, 8, 8) )
+            else:
+                self.surface.blit(self.gfx.greydiamond, (8 +(16*h), 534, 8, 8) )
             
