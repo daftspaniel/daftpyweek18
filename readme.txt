@@ -1,6 +1,10 @@
 8 Bit RPG by Davy Mitchell
 ==========================
 
+18/05/14
+
+THIS GAME AND ITS COMPONENT PARTS ARE PLACED IN THE PUBLIC DOMAIN.
+
     Requires:
         Platform Python 3.4
         Library PyGame 1.9.2a0
