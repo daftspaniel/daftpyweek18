@@ -1,6 +1,8 @@
 from gamelib.util import *
 from gamelib.symbols import *
 
+import os
+
 class gfxStore(object):
 
     def __init__(self, scale):
@@ -70,6 +72,10 @@ class gfxStore(object):
         self.shopkeeper = self.LoadGFX("img/npc/shopk.png")
         
     def LoadGFX(self, filename, scale = True):
+        
+        if filename.find(os.sep)==-1:
+            filename = filename.replace("/", os.sep)
+        
         i = pygame.image.load(filename).convert()
         i.set_colorkey((255, 255, 255))
         if scale:
@@ -90,4 +96,6 @@ class sfxStore(object):
         self.lose = self.LoadSND("snd/lose.wav")
         
     def LoadSND(self, filename):
+        if filename.find(os.sep)==-1:
+            filename = filename.replace("/", os.sep)
         return pygame.mixer.Sound(filename)
